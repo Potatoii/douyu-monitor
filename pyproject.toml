@@ -1,0 +1,10 @@
+[project]
+name = "douyu-monitor"
+version = "0.1.0"
+description = "斗鱼直播间礼物监控"
+requires-python = ">=3.10"
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
+asyncio_mode = "auto"
