@@ -123,3 +123,21 @@ async def test_enrich_unknown_leaves_blank_and_queries_once():
     second = _event(999999, "未知礼物")
     await service.enrich(second)
     assert pool.calls == 2
+
+
+async def test_enrich_retries_miss_after_ttl():
+    pool = FakePool(
+        None, None,  # first: id miss + name miss
+        {"gift_id": 4068, "gift_name": "悠闲假日", "price_yu": 6.0, "value_rmb": 6.0},
+    )
+    service = PriceService(pool)
+    first = _event(4068, "悠闲假日")
+    await service.enrich(first)
+    assert first.gift_price is None
+    service._missing[4068] = service._missing[4068] - 301
+    service._name_miss["悠闲假日"] = service._name_miss["悠闲假日"] - 301
+    second = _event(4068, "悠闲假日")
+    await service.enrich(second)
+    assert second.gift_price == 6
+    assert second.gift_value == Decimal("6")
+    assert pool.calls == 3
