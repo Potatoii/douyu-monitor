@@ -1,0 +1,11 @@
+.venv/
+.idea/
+.git/
+.env
+gift.json
+logs/
+__pycache__/
+*.pyc
+.pytest_cache/
+docs/
+tests/

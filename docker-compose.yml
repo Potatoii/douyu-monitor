@@ -1,0 +1,33 @@
+services:
+  db:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: douyu
+      POSTGRES_PASSWORD: douyu123
+      POSTGRES_DB: douyu_monitor
+      TZ: Asia/Shanghai
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./sql/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U douyu -d douyu_monitor"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+    restart: unless-stopped
+
+  monitor:
+    build: .
+    env_file: .env
+    environment:
+      DB_DSN: postgresql://douyu:douyu123@db:5432/douyu_monitor
+      TZ: Asia/Shanghai
+    volumes:
+      - ./logs:/app/logs
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  pgdata:
