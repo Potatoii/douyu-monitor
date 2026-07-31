@@ -25,10 +25,16 @@ CREATE INDEX IF NOT EXISTS idx_gift_events_room_time ON gift_events (room_id, se
 CREATE INDEX IF NOT EXISTS idx_gift_events_sender    ON gift_events (sender_uid);
 
 -- 礼物信息表（价值换算依据）
+-- id_type 区分三种 ID 命名空间，数字可能重复：
+--   gfid = dgb 消息中的真实礼物 ID
+--   pid  = pandora 活动图片 ID（pid_* 键）
+--   pgid = 活动礼物图片 ID（pgid_* 键）
 CREATE TABLE IF NOT EXISTS gift_catalog (
-    gift_id      INT           PRIMARY KEY,
+    id_type      VARCHAR(8)    NOT NULL DEFAULT 'gfid',
+    gift_id      INT           NOT NULL,
     gift_name    VARCHAR(64)   NOT NULL,
     price_yu     NUMERIC(10,2),
     value_rmb    NUMERIC(10,2),
-    updated_at   TIMESTAMP     DEFAULT now()
+    updated_at   TIMESTAMP     DEFAULT now(),
+    PRIMARY KEY (id_type, gift_id)
 );
