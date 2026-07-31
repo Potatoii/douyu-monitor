@@ -76,15 +76,13 @@ python -m pytest tests
 
 ## Docker 部署
 
-见 [docs/部署方案-docker.md](docs/部署方案-docker.md)。
+见 [docs/部署方案-docker.md](docs/部署方案-docker.md)。数据库使用外置 PostgreSQL（不在 Docker 内），配置走 `.env` 的 `DB_DSN`。
 
 ```powershell
-copy .env.example .env    # 填 ROOMS
+copy .env.example .env    # 填 ROOMS 和 DB_DSN（外置库）
 docker compose up -d --build
 docker compose logs -f monitor
 ```
-
-数据库存于命名卷 `pgdata`，日志映射到宿主机 `logs/`。
 
 ## 数据表
 
