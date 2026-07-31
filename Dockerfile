@@ -16,11 +16,6 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-RUN useradd -m -u 1000 appuser \
-    && chown -R appuser:appuser /app \
-    && mkdir -p /app/logs \
-    && chown appuser:appuser /app/logs
-
-USER appuser
+RUN mkdir -p /app/logs
 
 CMD ["python", "-u", "main.py"]

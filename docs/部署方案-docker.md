@@ -22,7 +22,7 @@
 
 | 文件 | 作用 |
 |---|---|
-| `Dockerfile` | Python 3.12 slim，非 root 运行，时区 Asia/Shanghai，pip 走清华镜像 |
+| `Dockerfile` | Python 3.12 slim，时区 Asia/Shanghai，pip 走清华镜像。以 root 运行（自用部署），避免 bind mount 的日志目录权限问题 |
 | `.dockerignore` | 排除 `.env`、`.venv`、日志等敏感/无用文件进镜像 |
 | `docker-compose.yml` | 仅 monitor 一个服务，配置经 `env_file: .env` 注入 |
 
@@ -65,6 +65,7 @@ psql -h <db-host> -U <user> <dbname> < backup.sql
 ## 常见问题
 
 1. **监控容器反复重启**：`docker compose logs monitor` 看原因，多为 DB_DSN 连不上（容器内访问不到 `localhost`，需用局域网 IP）或 CDN 握手超时（正常，会自动重连）。
-2. **端口范围**：程序只连 8501–8506，不再连 8500。
-3. **时区**：容器与日志均为 Asia/Shanghai。
-4. **代理环境**：Dockerfile 已用清华 PyPI 镜像；若网络还拦 https，可在 build 前给 Docker Desktop 配代理，或改 `PIP_INDEX_URL`。
+2. **日志目录创建不出来（PermissionError）**：镜像内以 root 运行，bind mount 的 `./logs` 挂载可正常写入；若宿主机 `logs` 目录被删除，Docker 会自动以 root 重建空目录，同样可写。日志文件在宿主机 `logs/{raw,gift,system,error}/` 下。
+3. **端口范围**：程序只连 8501–8506，不再连 8500。
+4. **时区**：容器与日志均为 Asia/Shanghai。
+5. **代理环境**：Dockerfile 已用清华 PyPI 镜像；若网络还拦 https，可在 build 前给 Docker Desktop 配代理，或改 `PIP_INDEX_URL`。
