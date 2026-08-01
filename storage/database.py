@@ -8,7 +8,7 @@ class Database:
             min_size=1,
             max_size=5,
             open=False,
-            kwargs={"connect_timeout": 10, "options": "-c statement_timeout=15000"},
+            kwargs={"connect_timeout": 10, "options": "-c timezone=Asia/Shanghai -c statement_timeout=15000"},
         )
 
     async def open(self) -> None:
