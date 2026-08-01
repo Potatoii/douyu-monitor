@@ -54,6 +54,11 @@ docker compose logs -f monitor
   docker compose cp gift.json monitor:/tmp/gift.json
   docker compose exec monitor python -m scripts.import_gifts --path /tmp/gift.json
   ```
+- 从 gift 日志恢复漏写的数据（幂等，重复执行安全）：
+  ```powershell
+  docker compose exec monitor python -m scripts.replay_gifts --dry-run   # 先统计
+  docker compose exec monitor python -m scripts.replay_gifts             # 补写入库
+  ```
 
 ## 备份与恢复（外置库）
 

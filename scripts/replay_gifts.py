@@ -87,6 +87,7 @@ async def main() -> None:
     parser.add_argument("--date", default=None, help="只处理指定日期的文件, 如 2026-08-01")
     parser.add_argument("--room", type=int, default=None, help="只处理指定房间")
     parser.add_argument("--dry-run", action="store_true", help="只统计不写库")
+    parser.add_argument("--verify", action="store_true", help="写完后对账日志 message_id 与库中实际命中数")
     args = parser.parse_args()
 
     events = list(iter_log_lines(Path(args.dir), args.date, args.room))
@@ -123,6 +124,15 @@ async def main() -> None:
             f"done: {processed} events, {priced} priced"
             + (" (dry run)" if args.dry_run else ", duplicates skipped via ON CONFLICT")
         )
+        if args.verify:
+            ids = [e.message_id for e in events]
+            async with db.pool().connection() as conn:
+                cur = await conn.execute(
+                    "SELECT COUNT(*) FROM gift_events WHERE message_id = ANY(%s)",
+                    (ids,),
+                )
+                hit = (await cur.fetchone())[0]
+            print(f"verify: {hit}/{len(ids)} message_ids found in db, missing={len(ids) - hit}")
     finally:
         await db.close()
 
