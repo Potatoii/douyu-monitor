@@ -1,7 +1,10 @@
 import hashlib
 from dataclasses import dataclass, field
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from decimal import Decimal
+
+# 数据库统一存北京时间（+08:00, naive）
+CST = timezone(timedelta(hours=8))
 
 
 @dataclass(slots=True)
@@ -31,7 +34,7 @@ class GiftEvent:
         if sent_at is None:
             sent_at = self.received_at
         if not self._utc:
-            sent_at = sent_at.astimezone(timezone.utc).replace(tzinfo=None)
+            sent_at = sent_at.astimezone(CST).replace(tzinfo=None)
             self._utc = True
         return (
             self.message_id,
@@ -48,7 +51,7 @@ class GiftEvent:
             self.receive_uid,
             self.hit_score,
             sent_at,
-            self.received_at.astimezone(timezone.utc).replace(tzinfo=None),
+            self.received_at.astimezone(CST).replace(tzinfo=None),
             self.port,
         )
 

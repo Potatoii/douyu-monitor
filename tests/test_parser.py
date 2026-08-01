@@ -76,9 +76,11 @@ def test_message_id_stable_for_same_body():
     assert a.message_id == b.message_id
 
 
-def test_to_db_row_naive_utc():
+def test_to_db_row_naive_cst():
     event = parser.parse_gift(protocol.parse_body(SAMPLE), 288016, 1, NOW, SAMPLE)
     row = event.to_db_row()
     assert row[0].startswith("dgb:")
     assert row[1] == 288016
     assert row[13].tzinfo is None
+    assert row[13] == datetime(2026, 7, 31, 20, 0, 0)
+    assert row[14] == datetime(2026, 7, 31, 20, 0, 0)
