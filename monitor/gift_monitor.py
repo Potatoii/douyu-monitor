@@ -99,7 +99,7 @@ class GiftMonitor:
             if event is not None and self.price_service is not None:
                 await self.price_service.enrich(event)
                 batch.append(event)
-            if batch and (len(batch) >= batch_size or (event is None and time.monotonic() >= deadline)):
+            if batch and (len(batch) >= batch_size or time.monotonic() >= deadline):
                 await self._flush(batch)
                 batch = []
                 deadline = time.monotonic() + flush_interval
