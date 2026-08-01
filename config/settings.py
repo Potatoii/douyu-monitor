@@ -13,6 +13,7 @@ class Settings(BaseSettings):
     dedup_max_size: int = 200_000
     batch_size: int = 50
     flush_interval: float = 2.0
+    insert_per_row: bool = False
 
     @property
     def room_ids(self) -> list[int]:

@@ -13,14 +13,32 @@ ON CONFLICT (message_id) DO NOTHING
 """
 
 
-async def insert_gift_events(pool: AsyncConnectionPool, events: list[GiftEvent]) -> int:
+async def insert_gift_events(
+    pool: AsyncConnectionPool, events: list[GiftEvent], per_row: bool = False
+) -> int:
+    """批量插入礼物事件; per_row=True 时逐条插入, 单条失败跳过不影响其他行.
+
+    返回尝试插入的条数（ON CONFLICT 冲突的行不计入失败，重复行会被静默跳过）.
+    """
     if not events:
         return 0
     rows = [event.to_db_row() for event in events]
     async with pool.connection() as conn:
         async with conn.cursor() as cur:
-            await cur.executemany(_INSERT_SQL, rows)
-            return len(events)
+            if not per_row:
+                await cur.executemany(_INSERT_SQL, rows)
+                return len(events)
+            inserted = 0
+            for row in rows:
+                try:
+                    await cur.execute(_INSERT_SQL, row)
+                    inserted += 1
+                except Exception:
+                    try:
+                        await conn.rollback()
+                    except Exception:
+                        pass
+            return inserted
 
 async def load_gift_catalog(pool: AsyncConnectionPool) -> dict[int, tuple[str | None, int | None]]:
     """加载全部礼物信息: gift_id -> (名称, 人民币价值)."""

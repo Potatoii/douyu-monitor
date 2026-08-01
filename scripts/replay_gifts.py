@@ -88,6 +88,7 @@ async def main() -> None:
     parser.add_argument("--room", type=int, default=None, help="只处理指定房间")
     parser.add_argument("--dry-run", action="store_true", help="只统计不写库")
     parser.add_argument("--verify", action="store_true", help="写完后对账日志 message_id 与库中实际命中数")
+    parser.add_argument("--per-row", action="store_true", help="逐条插入, 单条失败跳过")
     args = parser.parse_args()
 
     events = list(iter_log_lines(Path(args.dir), args.date, args.room))
@@ -107,7 +108,7 @@ async def main() -> None:
             priced += sum(1 for e in batch if e.gift_value is not None)
             if args.dry_run:
                 return
-            await repository.insert_gift_events(db.pool(), batch)
+            await repository.insert_gift_events(db.pool(), batch, per_row=args.per_row)
 
         for event in events:
             await service.enrich(event)

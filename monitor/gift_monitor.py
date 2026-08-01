@@ -107,6 +107,11 @@ class GiftMonitor:
     async def _flush(self, batch: list[parser.GiftEvent]) -> None:
         if self.database is None:
             return
+        if self.settings.insert_per_row:
+            inserted = await repository.insert_gift_events(self.database.pool(), batch, per_row=True)
+            if inserted < len(batch):
+                logger.log_error(f"per-row insert: {len(batch) - inserted}/{len(batch)} failed and skipped")
+            return
         for attempt in range(3):
             try:
                 await repository.insert_gift_events(self.database.pool(), batch)
