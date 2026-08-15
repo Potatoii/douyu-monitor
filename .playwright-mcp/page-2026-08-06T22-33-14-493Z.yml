@@ -1,7 +1,0 @@
-- generic [ref=f3e1]:
-  - generic:
-    - generic: "0"
-    - generic: BEST 408
-  - generic [ref=f3e3] [cursor=pointer]:
-    - generic [ref=f3e4]: 合成大西瓜
-    - generic [ref=f3e5]: 点击 / 空格 投掷 · 鼠标左右移动预览同种水果相碰即可合成升级目标：合成两个大西瓜
