@@ -112,6 +112,55 @@ def parse_gift(
     )
 
 
+def parse_subscription(
+    fields: dict[str, str],
+    room_id: int,
+    port: int,
+    received_at: datetime,
+    raw_msg: str,
+) -> GiftEvent | None:
+    """解析钻粉开通(dfobc)/续费(dfrbc)消息为 GiftEvent.
+
+    price 单位为分(总价), 月价 = price / 100 / mn.
+    """
+    msg_type = fields.get("type", "")
+    if msg_type not in ("dfobc", "dfrbc"):
+        return None
+    eid = _to_int(fields.get("eid"))
+    if eid is None:
+        return None
+    mn = _to_int(fields.get("mn"), 1) or 1
+    price = _to_int(fields.get("price"))
+    total_price = price // 100 if price is not None else None
+    gift_price = total_price // mn if total_price is not None else None
+    sent_at = None
+    if fields.get("bet"):
+        try:
+            sent_at = datetime.fromtimestamp(int(fields["bet"]), tz=timezone.utc)
+        except (ValueError, OverflowError):
+            sent_at = None
+    return GiftEvent(
+        message_id=make_message_id(raw_msg),
+        room_id=room_id,
+        sender_uid=_to_int(fields.get("uid"), 0) or 0,
+        sender_nickname=fields.get("nick") or "",
+        gift_id=eid,
+        gift_name="钻粉开通" if msg_type == "dfobc" else "钻粉续费",
+        gift_count=mn,
+        gift_price=gift_price,
+        total_price=total_price,
+        gift_value=None,
+        total_value=None,
+        receive_uid=None,
+        hit_score=None,
+        sent_at=sent_at,
+        received_at=received_at,
+        port=port,
+        raw_msg=raw_msg,
+        msg_type=msg_type,
+    )
+
+
 def unescape(value: str) -> str:
     """反转义: @A= -> @=, @S -> / (斗鱼嵌套消息编码)."""
     return value.replace("@S", "/").replace("@A=", "@=")

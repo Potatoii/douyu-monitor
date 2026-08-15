@@ -1,0 +1,3 @@
+[      78ms] [WARNING] matter-js: Matter.Engine.update: delta argument is recommended to be less than or equal to 16.667 ms. @ http://127.0.0.1:8133/matter.min.js:5
+[      85ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:8133/favicon.ico:0
+[      86ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:8133/favicon.ico:0

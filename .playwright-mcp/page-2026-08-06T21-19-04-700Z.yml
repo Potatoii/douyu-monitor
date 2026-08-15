@@ -1,0 +1,232 @@
+- generic [ref=f32e1]:
+  - banner [ref=f32e2]:
+    - generic [ref=f32e4]:
+      - generic [ref=f32e5]:
+        - button [ref=f32e6] [cursor=pointer]
+        - link "斗鱼" [ref=f32e7] [cursor=pointer]:
+          - /url: /
+        - list [ref=f32e9]:
+          - listitem [ref=f32e10]:
+            - link "首页" [ref=f32e11] [cursor=pointer]:
+              - /url: /
+          - listitem [ref=f32e12]:
+            - link "直播" [ref=f32e13] [cursor=pointer]:
+              - /url: /directory/all
+          - listitem [ref=f32e14]:
+            - link "分类" [ref=f32e15] [cursor=pointer]:
+              - /url: /directory
+          - listitem [ref=f32e17]:
+            - link "赛事" [ref=f32e18] [cursor=pointer]:
+              - /url: /pages/match-center
+          - listitem [ref=f32e19]:
+            - link "游戏" [ref=f32e20] [cursor=pointer]:
+              - /url: //wan.douyu.com
+          - listitem [ref=f32e22]:
+            - link "鱼吧" [ref=f32e23] [cursor=pointer]:
+              - /url: //yuba.douyu.com
+          - listitem [ref=f32e24]:
+            - link "视频" [ref=f32e25] [cursor=pointer]:
+              - /url: https://v.douyu.com
+      - generic [ref=f32e26]:
+        - generic [ref=f32e29]:
+          - textbox [ref=f32e31]
+          - button [ref=f32e32] [cursor=pointer]
+        - link "历史" [ref=f32e36] [cursor=pointer]:
+          - /url: /directory/watchHistory
+        - link "关注" [ref=f32e42] [cursor=pointer]:
+          - /url: /directory/myFollow
+        - link "下载" [ref=f32e48] [cursor=pointer]:
+          - /url: /client
+        - link "开播" [ref=f32e54] [cursor=pointer]:
+          - /url: /pages/streamingtools
+        - link "消息" [ref=f32e60] [cursor=pointer]:
+          - /url: //yuba.douyu.com/message/at/all
+        - link "创作中心" [ref=f32e65] [cursor=pointer]:
+          - /url: /creator
+        - link [ref=f32e71] [cursor=pointer]:
+          - /url: /member/login
+  - img "小众宝藏结晶直播间 6657" [ref=f32e73]
+  - complementary:
+    - generic [ref=f32e74]:
+      - generic [ref=f32e75]:
+        - button [ref=f32e76] [cursor=pointer]
+        - link "斗鱼" [ref=f32e77] [cursor=pointer]:
+          - /url: /
+      - generic [ref=f32e80]:
+        - generic [ref=f32e81]:
+          - link [ref=f32e82] [cursor=pointer]:
+            - /url: /directory/myFollow
+            - strong [ref=f32e84]: 我的关注
+          - link [ref=f32e85] [cursor=pointer]:
+            - /url: /directory/rank_list/PCgame
+            - strong [ref=f32e87]: 排行榜
+          - link [ref=f32e88] [cursor=pointer]:
+            - /url: https://wan.douyu.com/
+            - strong [ref=f32e90]: 页游中心
+          - link [ref=f32e91] [cursor=pointer]:
+            - /url: https://v.douyu.com
+            - strong [ref=f32e93]: 视频
+          - link [ref=f32e94] [cursor=pointer]:
+            - /url: /pages/match-center
+            - strong [ref=f32e96]: 赛事
+        - generic [ref=f32e97]:
+          - link "客户端打开" [ref=f32e98] [cursor=pointer]:
+            - /url: /client?tab=client#pc
+          - link "我要开播" [ref=f32e101] [cursor=pointer]:
+            - /url: /special/guide/anchor
+      - generic [ref=f32e104]:
+        - link "留言反馈" [ref=f32e105] [cursor=pointer]:
+          - /url: //kefu.douyu.com/nx/selfmessage.html#/
+        - link "客服支持" [ref=f32e106] [cursor=pointer]:
+          - /url: //kefu.douyu.com/nx/index.html#/
+        - link "12345热线" [ref=f32e107] [cursor=pointer]:
+          - /url: https://jbts.mct.gov.cn
+  - main [ref=f32e108]:
+    - generic [ref=f32e109]:
+      - generic [ref=f32e111]:
+        - generic [ref=f32e114]:
+          - img "玩机器丶Machine" [ref=f32e117]
+          - generic [ref=f32e118]:
+            - generic [ref=f32e119]:
+              - heading "小众宝藏结晶直播间 6657" [level=1] [ref=f32e120]
+              - button "关注" [ref=f32e124] [cursor=pointer]
+              - generic [ref=f32e127] [cursor=pointer]
+            - generic [ref=f32e129]:
+              - generic "主播等级：114" [ref=f32e131] [cursor=pointer]
+              - heading "玩机器丶Machine" [level=3] [ref=f32e132] [cursor=pointer]
+              - generic [ref=f32e133]: "3413846"
+              - link "CS2" [ref=f32e135] [cursor=pointer]:
+                - /url: /g_CounterStrike
+              - generic [ref=f32e137]: 一起看
+        - generic [ref=f32e157]:
+          - generic [ref=f32e162]:
+            - list [ref=f32e164]:
+              - listitem [ref=f32e165] [cursor=pointer]:
+                - generic [ref=f32e166]: 在线榜
+              - listitem [ref=f32e167] [cursor=pointer]:
+                - generic [ref=f32e168]: 活跃榜
+              - listitem [ref=f32e169] [cursor=pointer]:
+                - generic [ref=f32e170]:
+                  - text: 贵宾(
+                  - emphasis [ref=f32e171]: "0"
+                  - text: )
+              - listitem [ref=f32e172] [cursor=pointer]:
+                - generic [ref=f32e173]:
+                  - text: 钻粉(
+                  - emphasis [ref=f32e174]: "0"
+                  - text: )
+            - generic [ref=f32e177]:
+              - list [ref=f32e179]
+              - generic [ref=f32e181]:
+                - generic [ref=f32e182]: 贵族用户可以设置榜单匿名啦~
+                - generic [ref=f32e183]:
+                  - text: 活跃度榜隐身
+                  - emphasis [ref=f32e185]:
+                    - checkbox [ref=f32e186]
+          - generic [ref=f32e191]:
+            - generic [ref=f32e192]:
+              - generic [ref=f32e193]:
+                - generic [ref=f32e194]:
+                  - generic "表情"
+                - generic [ref=f32e195]:
+                  - generic "喇叭"
+                - generic [ref=f32e197]:
+                  - generic "粉丝弹幕"
+                - generic:
+                  - generic "高级弹幕"
+              - generic [ref=f32e199] [cursor=pointer]:
+                - generic:
+                  - generic "弹幕屏蔽"
+            - generic [ref=f32e200]:
+              - generic [ref=f32e201]: 未拥有
+              - generic [ref=f32e206]:
+                - generic [ref=f32e207]: 这里输入聊天内容
+                - generic [ref=f32e210] [cursor=pointer]: 发送
+      - generic [ref=f32e211]:
+        - generic [ref=f32e212] [cursor=pointer]
+        - generic [ref=f32e217] [cursor=pointer]
+  - generic [ref=f32e218]:
+    - heading "热门搜索" [level=2] [ref=f32e219]
+    - list [ref=f32e220]:
+      - listitem [ref=f32e221]:
+        - link [ref=f32e222] [cursor=pointer]:
+          - /url: https://www.douyu.com/9263298
+          - heading "若若跑的贼快" [level=3] [ref=f32e223]
+      - listitem [ref=f32e224]:
+        - link [ref=f32e225] [cursor=pointer]:
+          - /url: https://www.douyu.com/36252
+          - heading "MrGemini" [level=3] [ref=f32e226]
+      - listitem [ref=f32e227]:
+        - link [ref=f32e228] [cursor=pointer]:
+          - /url: https://www.douyu.com/5092355
+          - heading "二呆啾" [level=3] [ref=f32e229]
+      - listitem [ref=f32e230]:
+        - link [ref=f32e231] [cursor=pointer]:
+          - /url: https://www.douyu.com/3276456
+          - heading "贝拉小姐姐" [level=3] [ref=f32e232]
+      - listitem [ref=f32e233]:
+        - link [ref=f32e234] [cursor=pointer]:
+          - /url: https://www.douyu.com/8758901
+          - heading "保护我方蛋饼" [level=3] [ref=f32e235]
+      - listitem [ref=f32e236]:
+        - link [ref=f32e237] [cursor=pointer]:
+          - /url: https://www.douyu.com/10173948
+          - heading "婉儿别闹" [level=3] [ref=f32e238]
+      - listitem [ref=f32e239]:
+        - link [ref=f32e240] [cursor=pointer]:
+          - /url: https://www.douyu.com/7718843
+          - heading "阳光男孩Aq" [level=3] [ref=f32e241]
+      - listitem [ref=f32e242]:
+        - link [ref=f32e243] [cursor=pointer]:
+          - /url: https://www.douyu.com/231059
+          - heading "diyy刘頔" [level=3] [ref=f32e244]
+      - listitem [ref=f32e245]:
+        - link [ref=f32e246] [cursor=pointer]:
+          - /url: https://www.douyu.com/8727436
+          - heading "暖妹QWQ" [level=3] [ref=f32e247]
+      - listitem [ref=f32e248]:
+        - link [ref=f32e249] [cursor=pointer]:
+          - /url: https://www.douyu.com/316022
+          - heading "右手supking" [level=3] [ref=f32e250]
+      - listitem [ref=f32e251]:
+        - link [ref=f32e252] [cursor=pointer]:
+          - /url: https://www.douyu.com/11942374
+          - heading "北极昕" [level=3] [ref=f32e253]
+      - listitem [ref=f32e254]:
+        - link [ref=f32e255] [cursor=pointer]:
+          - /url: https://www.douyu.com/12020475
+          - heading "小一熟了哦" [level=3] [ref=f32e256]
+      - listitem [ref=f32e257]:
+        - link [ref=f32e258] [cursor=pointer]:
+          - /url: https://www.douyu.com/252140
+          - heading "金咕咕金咕咕doinb" [level=3] [ref=f32e259]
+      - listitem [ref=f32e260]:
+        - link [ref=f32e261] [cursor=pointer]:
+          - /url: https://www.douyu.com/11969714
+          - heading "一颗豆豆iu" [level=3] [ref=f32e262]
+      - listitem [ref=f32e263]:
+        - link [ref=f32e264] [cursor=pointer]:
+          - /url: https://www.douyu.com/3168536
+          - heading "xleft小叮当" [level=3] [ref=f32e265]
+      - listitem [ref=f32e266]:
+        - link [ref=f32e267] [cursor=pointer]:
+          - /url: https://www.douyu.com/63136
+          - heading "冬瓜强" [level=3] [ref=f32e268]
+      - listitem [ref=f32e269]:
+        - link [ref=f32e270] [cursor=pointer]:
+          - /url: https://www.douyu.com/6979222
+          - heading "玩机器丶Machine" [level=3] [ref=f32e271]
+      - listitem [ref=f32e272]:
+        - link [ref=f32e273] [cursor=pointer]:
+          - /url: https://www.douyu.com/84452
+          - heading "主播阿飞" [level=3] [ref=f32e274]
+      - listitem [ref=f32e275]:
+        - link [ref=f32e276] [cursor=pointer]:
+          - /url: https://www.douyu.com/8682569
+          - heading "冷少icon" [level=3] [ref=f32e277]
+      - listitem [ref=f32e278]:
+        - link [ref=f32e279] [cursor=pointer]:
+          - /url: https://www.douyu.com/2158798
+          - heading "小鱼小鱼吃虾米" [level=3] [ref=f32e280]
+  - region "Notifications Alt+T"
+  - alert [ref=f32e281]

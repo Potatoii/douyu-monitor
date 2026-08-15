@@ -156,3 +156,46 @@ def test_danmu_row_values():
     assert row[6] == datetime(2026, 7, 31, 22, 46, 18, 266000)
     assert row[7] == datetime(2026, 7, 31, 20, 0, 0)
     assert row[9] is None
+
+
+DFOBC = ("type@=dfobc/uid@=2319772/rid@=12598324/nick@=巴蒂batigoal/level@=25/pg@=1/fl@=12/"
+         "bn@=偏心p/mn@=3/cdays@=1/price@=47400/rrid@=12598324/rnick@=糯糯p/eid@=3768/"
+         "bet@=1786555574/dfgm@=3/")
+DFRBC = ("type@=dfrbc/uid@=26960719/rid@=12598324/nick@=假牙糯/level@=40/fl@=20/"
+         "bn@=偏心p/mn@=1/cdays@=47/price@=13800/rrid@=12598324/rnick@=糯糯p/eid@=5755/"
+         "al@=3871@S2.8@S/bet@=1785510609/dfgm@=3/")
+
+
+def test_parse_subscription_dfobc():
+    event = parser.parse_subscription(protocol.parse_body(DFOBC), 12598324, 4, NOW, DFOBC)
+    assert event is not None
+    assert event.msg_type == "dfobc"
+    assert event.gift_name == "钻粉开通"
+    assert event.gift_id == 3768
+    assert event.gift_count == 3
+    assert event.total_price == 474
+    assert event.gift_price == 158
+    assert event.sender_uid == 2319772
+    assert event.sender_nickname == "巴蒂batigoal"
+    assert event.receive_uid is None
+    assert event.gift_value is None
+    row = event.to_db_row()
+    assert row[13].tzinfo is None
+    assert row[13] == datetime(2026, 8, 13, 1, 26, 14)
+
+
+def test_parse_subscription_dfrbc():
+    event = parser.parse_subscription(protocol.parse_body(DFRBC), 12598324, 3, NOW, DFRBC)
+    assert event is not None
+    assert event.msg_type == "dfrbc"
+    assert event.gift_name == "钻粉续费"
+    assert event.gift_id == 5755
+    assert event.gift_count == 1
+    assert event.total_price == 138
+    assert event.gift_price == 138
+    assert event.sender_nickname == "假牙糯"
+
+
+def test_parse_subscription_rejects_others():
+    assert parser.parse_subscription({"type": "dgb"}, 1, 0, NOW, "x") is None
+    assert parser.parse_subscription({"type": "dfobc", "eid": ""}, 1, 0, NOW, "x") is None

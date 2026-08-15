@@ -68,9 +68,13 @@ class GiftMonitor:
         ):
             await self._handle_danmu(room_id, port, fields, body)
             return
-        if msg_type != "dgb":
+        if msg_type not in ("dgb", "dfobc", "dfrbc"):
             return
         event = parser.parse_gift(fields, room_id, port, datetime.now(timezone.utc), body)
+        if event is None:
+            event = parser.parse_subscription(
+                fields, room_id, port, datetime.now(timezone.utc), body
+            )
         if event is None or not self.deduper.is_new(event.message_id):
             return
         logger.log_gift(room_id, port, event.message_id, {
