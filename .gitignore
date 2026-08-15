@@ -6,3 +6,4 @@ gift.json
 __pycache__/
 *.pyc
 .pytest_cache/
+.playwright-mcp/suika/*.pngopencode.json

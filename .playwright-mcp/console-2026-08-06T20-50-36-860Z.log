@@ -1,1 +1,0 @@
-[      47ms] [WARNING] matter-js: Matter.Engine.update: delta argument is recommended to be less than or equal to 16.667 ms. @ http://127.0.0.1:8133/matter.min.js:5
