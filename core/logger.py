@@ -5,12 +5,14 @@ from loguru import logger
 
 STREAM_RAW = "raw"
 STREAM_GIFT = "gift"
+STREAM_DANMU = "danmu"
 STREAM_SYSTEM = "system"
 STREAM_ERROR = "error"
 
 _FILES = {
     STREAM_RAW: "raw",
     STREAM_GIFT: "gift",
+    STREAM_DANMU: "danmu",
     STREAM_SYSTEM: "system",
     STREAM_ERROR: "error",
 }
@@ -50,6 +52,10 @@ def log_raw(room_id: int, port: int, msg_type: str, body: str) -> None:
 
 def log_gift(room_id: int, port: int, msg_id: str, gift: dict) -> None:
     logger.bind(stream=STREAM_GIFT, room_id=room_id, port=port, msg_id=msg_id).info(gift)
+
+
+def log_danmu(room_id: int, port: int, msg_id: str, danmu: dict) -> None:
+    logger.bind(stream=STREAM_DANMU, room_id=room_id, port=port, msg_id=msg_id).info(danmu)
 
 
 def log_system(message: str, **extra) -> None:

@@ -14,6 +14,9 @@ class Settings(BaseSettings):
     batch_size: int = 50
     flush_interval: float = 2.0
     insert_per_row: bool = False
+    danmu_enabled: bool = True
+    danmu_batch_size: int = 200
+    danmu_flush_interval: float = 2.0
 
     @property
     def room_ids(self) -> list[int]:

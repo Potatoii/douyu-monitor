@@ -1,0 +1,37 @@
+- generic [ref=e5]:
+  - generic [ref=e10]:
+    - generic [ref=e11]: 加
+    - generic [ref=e12]: 载
+    - generic [ref=e13]: 中
+    - generic [ref=e14]: .
+    - generic [ref=e15]: .
+    - generic [ref=e16]: .
+  - generic:
+    - generic [ref=e18]:
+      - generic [ref=e19]:
+        - generic [ref=e20]:
+          - img "用户头像" [ref=e21]
+          - generic [ref=e22]: "周单局记录:"
+          - strong [ref=e23]: "--"
+        - generic [ref=e24]:
+          - generic [ref=e25]: 本周
+          - strong [ref=e26]: "--个"
+        - generic [ref=e27]:
+          - strong [ref=e28]: "--"
+          - button "增加西瓜币" [ref=e29] [cursor=pointer]
+      - button [ref=e30] [cursor=pointer]:
+        - img "更多" [ref=e31]
+    - generic:
+      - button "任务" [ref=e32] [cursor=pointer]
+      - link "天梯" [ref=e34] [cursor=pointer]:
+        - /url: /pages/vibe-lab-act202607-game/ladder?rid=6979222
+      - link "成就" [ref=e36] [cursor=pointer]:
+        - /url: /pages/vibe-lab-act202607-game/achievement?rid=6979222
+    - generic:
+      - generic:
+        - generic [ref=e38] [cursor=pointer]:
+          - strong [ref=e39]: 本房皮肤
+          - strong [ref=e45]: 0/1
+        - generic [ref=e46] [cursor=pointer]:
+          - generic [ref=e47]: 王者皮肤
+          - paragraph [ref=e49]: 12:00开启冠名争夺

@@ -84,3 +84,75 @@ def test_to_db_row_naive_cst():
     assert row[13].tzinfo is None
     assert row[13] == datetime(2026, 7, 31, 20, 0, 0)
     assert row[14] == datetime(2026, 7, 31, 20, 0, 0)
+
+
+CHATMSG = ("type@=chatmsg/rid@=12598324/ct@=1/uid@=2566587/nn@=Archy木昜/"
+           "txt@=糯糯不敢玩龚建？/cid@=c1deae55076248455eaa130000000000/"
+           "ic@=avatar@S002@S56@S65@S87_avatar/level@=33/sahf@=0/cst@=1785509178266/"
+           "bnn@=/bl@=0/brid@=0/hc@=/lk@=/dms@=4/pdg@=41/pdk@=88/ext@=/if@=1/")
+PANDORA = ("btype@=pandora/chatmsg@=nn@A=打死不吃西红柿A@Sbnn@A=冬瓜强@Slevel@A=41@Sbrid@A=63136"
+           "@Sdiaf@A=1@Sbl@A=28@Stype@A=chatmsg@Srid@A=12598324@Sgag@A=0@Suid@A=339634851/"
+           "range@=2/cprice@=0/cmgType@=0/type@=comm_chatmsg/rid@=12598324/txt6@=4066/gbtemp@=15/"
+           "uid@=339634851/txt4@=盛夏草帽/txt5@=，并送给了主播/crealPrice@=0/cet@=0/"
+           "txt2@=https:@S@Sgfs-op.douyucdn.cn@Sdygift@S2026@S07@S24@Sd8d33b04c8aa5cd909766978582f4921.png@Srs144/"
+           "txt3@=，开出/now@=1785509711867/txt1@=赠送主播/csuperScreen@=0/danmucr@=0/")
+
+
+def test_parse_danmu():
+    danmu = parser.parse_danmu(protocol.parse_body(CHATMSG), 12598324, 3, NOW, CHATMSG)
+    assert danmu is not None
+    assert danmu.message_id == "danmu:c1deae55076248455eaa130000000000"
+    assert danmu.sender_uid == 2566587
+    assert danmu.sender_nickname == "Archy木昜"
+    assert danmu.content == "糯糯不敢玩龚建？"
+    assert danmu.level == 33
+    assert danmu.btype is None
+    assert danmu.port == 3
+    assert danmu.room_id == 12598324
+    assert danmu.sent_at is not None
+    assert danmu.sent_at.tzinfo is not None
+
+
+def test_parse_danmu_pandora():
+    danmu = parser.parse_danmu(protocol.parse_body(PANDORA), 12598324, 5, NOW, PANDORA)
+    assert danmu is not None
+    assert danmu.btype == "pandora"
+    assert danmu.sender_uid == 339634851
+    assert danmu.sender_nickname == "冬瓜强"
+    assert danmu.level == 41
+    assert "盛夏草帽" in danmu.content
+    assert danmu.sent_at is not None
+    assert danmu.message_id.startswith("dgb:")
+    row = danmu.to_db_row()
+    assert row[9] == "pandora"
+    assert row[6].tzinfo is None
+
+
+def test_parse_danmu_non_chat():
+    assert parser.parse_danmu({"type": "dgb"}, 1, 0, NOW, "x") is None
+    assert parser.parse_danmu({"type": "chatmsg", "uid": ""}, 1, 0, NOW, "x") is not None
+
+
+def test_danmu_cid_fallback():
+    body = "type@=chatmsg/uid@=1/nn@=x/txt@=hello/"
+    danmu = parser.parse_danmu(protocol.parse_body(body), 1, 0, NOW, body)
+    assert danmu is not None
+    assert danmu.message_id.startswith("dgb:")
+
+    danmu2 = parser.parse_danmu(protocol.parse_body(body), 1, 5, NOW, body)
+    assert danmu2.message_id == danmu.message_id
+
+
+def test_danmu_row_values():
+    danmu = parser.parse_danmu(protocol.parse_body(CHATMSG), 12598324, 2, NOW, CHATMSG)
+    row = danmu.to_db_row()
+    assert row[0] == "danmu:c1deae55076248455eaa130000000000"
+    assert row[1] == 12598324
+    assert row[2] == 2566587
+    assert row[3] == "Archy木昜"
+    assert row[4] == "糯糯不敢玩龚建？"
+    assert row[5] == 33
+    assert row[6].tzinfo is None
+    assert row[6] == datetime(2026, 7, 31, 22, 46, 18, 266000)
+    assert row[7] == datetime(2026, 7, 31, 20, 0, 0)
+    assert row[9] is None

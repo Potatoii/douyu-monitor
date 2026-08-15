@@ -1,7 +1,7 @@
 from psycopg.rows import dict_row
 from psycopg_pool import AsyncConnectionPool
 
-from core.parser import GiftEvent
+from core.parser import DanmuMessage, GiftEvent
 
 _INSERT_SQL = """
 INSERT INTO gift_events
@@ -9,6 +9,14 @@ INSERT INTO gift_events
  gift_count, gift_price, total_price, gift_value, total_value,
  receive_uid, hit_score, sent_at, received_at, port)
 VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+ON CONFLICT (message_id) DO NOTHING
+"""
+
+_DANMU_INSERT_SQL = """
+INSERT INTO danmu_messages
+(message_id, room_id, sender_uid, sender_nickname, content, level,
+ sent_at, received_at, port, btype)
+VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
 ON CONFLICT (message_id) DO NOTHING
 """
 
@@ -39,6 +47,34 @@ async def insert_gift_events(
                     except Exception:
                         pass
             return inserted
+
+async def insert_danmu_messages(
+    pool: AsyncConnectionPool, messages: list[DanmuMessage], per_row: bool = False
+) -> int:
+    """批量插入弹幕消息; per_row=True 时逐条插入, 单条失败跳过不影响其他行.
+
+    返回尝试插入的条数（ON CONFLICT 冲突的行不计入失败，重复行会被静默跳过）.
+    """
+    if not messages:
+        return 0
+    rows = [m.to_db_row() for m in messages]
+    async with pool.connection() as conn:
+        async with conn.cursor() as cur:
+            if not per_row:
+                await cur.executemany(_DANMU_INSERT_SQL, rows)
+                return len(messages)
+            inserted = 0
+            for row in rows:
+                try:
+                    await cur.execute(_DANMU_INSERT_SQL, row)
+                    inserted += 1
+                except Exception:
+                    try:
+                        await conn.rollback()
+                    except Exception:
+                        pass
+            return inserted
+
 
 async def load_gift_catalog(pool: AsyncConnectionPool) -> dict[int, tuple[str | None, int | None]]:
     """加载全部礼物信息: gift_id -> (名称, 人民币价值)."""

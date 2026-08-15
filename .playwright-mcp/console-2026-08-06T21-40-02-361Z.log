@@ -1,0 +1,4 @@
+[     114ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:8347/favicon.ico:0
+[     178ms] [WARNING] matter-js: Matter.Engine.update: delta argument is recommended to be less than or equal to 16.667 ms. @ http://localhost:8347/suika/matter.min.js:5
+[   15496ms] [WARNING] matter-js: Matter.Engine.update: delta argument is recommended to be less than or equal to 16.667 ms. @ http://localhost:8347/suika/matter.min.js:5
+[  196318ms] [WARNING] matter-js: Matter.Engine.update: delta argument is recommended to be less than or equal to 16.667 ms. @ http://localhost:8347/suika/matter.min.js:5
