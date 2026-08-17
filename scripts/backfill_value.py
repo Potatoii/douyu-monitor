@@ -36,7 +36,7 @@ async def backfill(db: Database) -> int:
                            gc.gift_name, gc.price_yu, gc.value_rmb
                     FROM gift_events ge
                     LEFT JOIN LATERAL (
-                        SELECT gift_name, price_yu, value_rmb FROM gift_catalog
+                        SELECT gift_id, gift_name, price_yu, value_rmb FROM gift_catalog
                         WHERE (id_type = 'gfid' AND gift_id = ge.gift_id)
                            OR (id_type = 'pid'  AND gift_id = ge.gift_id)
                         ORDER BY (id_type = 'gfid') DESC
