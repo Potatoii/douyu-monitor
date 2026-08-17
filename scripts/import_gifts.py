@@ -24,14 +24,17 @@ from config.settings import Settings
 from storage.database import Database
 
 INSERT_SQL = """
-INSERT INTO gift_catalog (id_type, gift_id, gift_name, price_yu, value_rmb)
-VALUES (%s, %s, %s, %s, %s)
+INSERT INTO gift_catalog (id_type, gift_id, gift_name, price_yu, value_rmb, source)
+VALUES (%s, %s, %s, %s, %s, %s)
 ON CONFLICT (id_type, gift_id) DO UPDATE
 SET gift_name = EXCLUDED.gift_name,
     price_yu  = EXCLUDED.price_yu,
     value_rmb = EXCLUDED.value_rmb,
+    source     = EXCLUDED.source,
     updated_at = now()
 """
+
+SOURCE = "gift.json"
 
 
 def _split_key(key: str) -> tuple[str, int] | None:
@@ -46,10 +49,10 @@ def _split_key(key: str) -> tuple[str, int] | None:
         return None
 
 
-def load_gifts(path: Path) -> tuple[list[tuple[str, int, str, float, float]], int]:
+def load_gifts(path: Path) -> tuple[list[tuple[str, int, str, float, float, str]], int]:
     with open(path, encoding="utf-8") as f:
         data = json.load(f)
-    rows: list[tuple[str, int, str, float, float]] = []
+    rows: list[tuple[str, int, str, float, float, str]] = []
     skipped = 0
     for gid, info in data.items():
         split = _split_key(gid)
@@ -59,7 +62,7 @@ def load_gifts(path: Path) -> tuple[list[tuple[str, int, str, float, float]], in
         id_type, gid_i = split
         price = int(info.get("price") or 0)
         name = (info.get("name") or "").strip()
-        rows.append((id_type, gid_i, name, price / 100.0, price / 100.0))
+        rows.append((id_type, gid_i, name, price / 100.0, price / 100.0, SOURCE))
     return rows, skipped
 
 

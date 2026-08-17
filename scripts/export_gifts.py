@@ -27,18 +27,19 @@ async def main() -> None:
     try:
         async with db.pool().connection() as conn:
             rows = await (await conn.execute(
-                "SELECT id_type, gift_id, gift_name, price_yu, value_rmb "
+                "SELECT id_type, gift_id, gift_name, price_yu, value_rmb, source "
                 "FROM gift_catalog ORDER BY id_type, gift_id"
             )).fetchall()
     finally:
         await db.close()
 
     data: dict[str, dict[str, dict]] = {"gfid": {}, "pid": {}, "pgid": {}}
-    for id_type, gift_id, name, price_yu, value_rmb in rows:
+    for id_type, gift_id, name, price_yu, value_rmb, source in rows:
         data[id_type][str(gift_id)] = {
             "name": name,
             "price_yu": float(price_yu or 0),
             "value_rmb": float(value_rmb or 0),
+            "source": source or "",
         }
 
     out = Path(args.output)
