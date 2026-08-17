@@ -89,6 +89,20 @@ docker compose logs -f monitor
 - `gift_events` — 礼物事件（已去重，含 message_id、房间、用户、礼物、数量、价格、价值、来源端口、时间）
 - `gift_catalog` — 礼物字典（gift_id → 名称、鱼翅价、人民币价）
 
+## 礼物字典来源
+
+`gift_catalog` 数据来自以下接口/文件（`scripts/` 下对应导入脚本，幂等 upsert）：
+
+| 来源 | URL | id_type | 脚本 |
+|------|-----|---------|------|
+| 本地缓存字典 | `gift.json`（仓库内） | gfid/pid/pgid | `import_gifts.py` |
+| 房间礼物列表 | `https://gift.douyucdn.cn/api/gift/v5/web/list?rid=<rid>` | gfid | `fetch_gifts.py` |
+| 七夕活动配置 | `https://wconf.douyucdn.cn/resource/common/activity/actqx202608_w.json` | gfid/pid | `fetch_activity_gifts.py` |
+| 潘多拉开奖表 | `https://www.douyu.com/japi/interact/comm/pandora/config?rid=<rid>` | pid | `fetch_activity_gifts.py` |
+| 礼物图鉴 | `https://wconf.douyucdn.cn/resource/common/giftPhotos_w.json` | pgid | `fetch_gift_photos.py` |
+
+价格单位：接口返回"分"，入库时 ÷100 存"元"（`price_yu`/`value_rmb`）。同一礼物可能有多个 ID 命名空间（gfid/pid/pgid），不同来源同名礼物价格可交叉验证（如七夕礼物 gfid 与图鉴 pgid 价格一致）。
+
 ## 日志
 
 ```powershell

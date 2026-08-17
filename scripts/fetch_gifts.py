@@ -23,13 +23,12 @@ from storage.database import Database
 API = "https://gift.douyucdn.cn/api/gift/v5/web/list?rid={rid}"
 
 INSERT_SQL = """
-INSERT INTO gift_catalog (id_type, gift_id, gift_name, price_yu, value_rmb, source)
-VALUES ('gfid', %s, %s, %s, %s, %s)
+INSERT INTO gift_catalog (id_type, gift_id, gift_name, price_yu, value_rmb)
+VALUES ('gfid', %s, %s, %s, %s)
 ON CONFLICT (id_type, gift_id) DO UPDATE
 SET gift_name = EXCLUDED.gift_name,
     price_yu  = EXCLUDED.price_yu,
     value_rmb = EXCLUDED.value_rmb,
-    source     = EXCLUDED.source,
     updated_at = now()
 """
 
@@ -44,14 +43,14 @@ def fetch_gifts(rid: int) -> list[tuple[int, str, float]]:
     )
     with urllib.request.urlopen(req, timeout=20) as resp:
         data = json.loads(resp.read().decode("utf-8"))
-    rows: list[tuple[int, str, float, str]] = []
+    rows: list[tuple[int, str, float]] = []
     for gift in data.get("data", {}).get("giftList", []):
         gid = gift.get("id")
         name = (gift.get("name") or "").strip()
         price_info = gift.get("priceInfo") or {}
         price = price_info.get("price") or 0
         if gid is not None:
-            rows.append((int(gid), name, float(price) / 100.0, API.format(rid=rid)))
+            rows.append((int(gid), name, float(price) / 100.0))
     return rows
 
 
@@ -69,7 +68,7 @@ async def main() -> None:
     print(f"fetched {len(rows)} gifts from rid={args.rid}")
     if args.dump:
         Path(args.dump).write_text(
-            json.dumps([{"gift_id": r[0], "name": r[1], "price": r[2], "source": r[3]} for r in rows],
+            json.dumps([{"gift_id": r[0], "name": r[1], "price": r[2]} for r in rows],
                        ensure_ascii=False, indent=1), encoding="utf-8")
         print(f"dumped to {args.dump}, not writing db")
         return
@@ -81,7 +80,7 @@ async def main() -> None:
             if args.replace:
                 await conn.execute("DELETE FROM gift_catalog WHERE id_type = 'gfid'")
             async with conn.cursor() as cur:
-                await cur.executemany(INSERT_SQL, [(g, n, p, p, src) for g, n, p, src in rows])
+                await cur.executemany(INSERT_SQL, [(g, n, p, p) for g, n, p in rows])
         print(f"imported {len(rows)} gifts into gift_catalog (gfid)")
     finally:
         await db.close()

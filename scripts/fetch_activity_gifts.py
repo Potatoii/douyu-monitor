@@ -25,13 +25,12 @@ ACTQX_URL = "https://wconf.douyucdn.cn/resource/common/activity/actqx202608_w.js
 PANDORA_URL = "https://www.douyu.com/japi/interact/comm/pandora/config?rid=12878454"
 
 INSERT_SQL = """
-INSERT INTO gift_catalog (id_type, gift_id, gift_name, price_yu, value_rmb, source)
-VALUES (%s, %s, %s, %s, %s, %s)
+INSERT INTO gift_catalog (id_type, gift_id, gift_name, price_yu, value_rmb)
+VALUES (%s, %s, %s, %s, %s)
 ON CONFLICT (id_type, gift_id) DO UPDATE
 SET gift_name = EXCLUDED.gift_name,
     price_yu  = EXCLUDED.price_yu,
     value_rmb = EXCLUDED.value_rmb,
-    source     = EXCLUDED.source,
     updated_at = now()
 """
 
@@ -44,20 +43,19 @@ def _get(url: str) -> dict:
         return json.loads(resp.read().decode("utf-8"))
 
 
-def collect_actqx() -> list[tuple[str, int, str, float, str]]:
+def collect_actqx() -> list[tuple[str, int, str, float]]:
     data = _get(ACTQX_URL).get("data", {})
-    rows: list[tuple[str, int, str, float, str]] = []
-    src = "actqx202608_w.json"
+    rows: list[tuple[str, int, str, float]] = []
 
     gs = data.get("gift_setting") or {}
     if gs.get("giftId"):
         rows.append(("gfid", int(gs["giftId"]), gs.get("giftName", ""),
-                     float(gs.get("giftPrice") or 0), src))
+                     float(gs.get("giftPrice") or 0)))
 
     fame = (data.get("fameAttributes") or {}).get("halfHourFame") or {}
     if fame.get("giftId"):
         rows.append(("gfid", int(fame["giftId"]), fame.get("giftName", ""),
-                     float(fame.get("giftPrice") or 0), src))
+                     float(fame.get("giftPrice") or 0)))
 
     vr = data.get("valentine_room") or {}
     seen: set[int] = set()
@@ -71,17 +69,16 @@ def collect_actqx() -> list[tuple[str, int, str, float, str]]:
                     if gid >= 20000:
                         continue  # 办卡/飞机/火箭等标准礼物已存在
                     rows.append(("pid", int(gid), prop.get("giftName", ""),
-                                 float(prop.get("price") or 0), src))
+                                 float(prop.get("price") or 0)))
     if vr.get("freePropId") and int(vr["freePropId"]) not in seen:
         rows.append(("pid", int(vr["freePropId"]), vr.get("freePropName", ""),
-                     float(vr.get("freePropPrice") or 0), src))
+                     float(vr.get("freePropPrice") or 0)))
     return rows
 
 
-def collect_pandora() -> list[tuple[str, int, str, float, str]]:
+def collect_pandora() -> list[tuple[str, int, str, float]]:
     data = _get(PANDORA_URL).get("data", {})
-    rows: list[tuple[str, int, str, float, str]] = []
-    src = "pandora config (japi/interact/comm/pandora/config)"
+    rows: list[tuple[str, int, str, float]] = []
     seen: set[int] = set()
     for activity in data.values():
         for ratio in (activity.get("ratio") or {}).values():
@@ -90,7 +87,7 @@ def collect_pandora() -> list[tuple[str, int, str, float, str]]:
                 if pid and pid not in seen:
                     seen.add(pid)
                     rows.append(("pid", int(pid), award.get("name", ""),
-                                 float(award.get("value") or 0) / 10.0, src))
+                                 float(award.get("value") or 0) / 10.0))
     return rows
 
 
@@ -111,7 +108,7 @@ async def main() -> None:
             if args.replace:
                 await conn.execute("DELETE FROM gift_catalog WHERE id_type = 'pid'")
             async with conn.cursor() as cur:
-                await cur.executemany(INSERT_SQL, [(t, g, n, p, p, s) for t, g, n, p, s in rows])
+                await cur.executemany(INSERT_SQL, [(t, g, n, p, p) for t, g, n, p in rows])
         by_type = {}
         for t, *_ in rows:
             by_type[t] = by_type.get(t, 0) + 1

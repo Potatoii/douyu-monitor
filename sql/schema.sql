@@ -35,7 +35,6 @@ CREATE TABLE IF NOT EXISTS gift_catalog (
     gift_name    VARCHAR(64)   NOT NULL,
     price_yu     NUMERIC(10,2),
     value_rmb    NUMERIC(10,2),
-    source       VARCHAR(255)  NOT NULL DEFAULT '',
     updated_at   TIMESTAMP     DEFAULT now(),
     PRIMARY KEY (id_type, gift_id)
 );

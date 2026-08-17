@@ -22,13 +22,12 @@ from storage.database import Database
 URL = "https://wconf.douyucdn.cn/resource/common/giftPhotos_w.json"
 
 INSERT_SQL = """
-INSERT INTO gift_catalog (id_type, gift_id, gift_name, price_yu, value_rmb, source)
-VALUES ('pgid', %s, %s, %s, %s, %s)
+INSERT INTO gift_catalog (id_type, gift_id, gift_name, price_yu, value_rmb)
+VALUES ('pgid', %s, %s, %s, %s)
 ON CONFLICT (id_type, gift_id) DO UPDATE
 SET gift_name = EXCLUDED.gift_name,
     price_yu  = EXCLUDED.price_yu,
     value_rmb = EXCLUDED.value_rmb,
-    source     = EXCLUDED.source,
     updated_at = now()
 """
 
@@ -39,13 +38,13 @@ def fetch_photos() -> list[tuple[int, str, float]]:
     )
     with urllib.request.urlopen(req, timeout=20) as resp:
         data = json.loads(resp.read().decode("utf-8"))
-    rows: list[tuple[int, str, float, str]] = []
+    rows: list[tuple[int, str, float]] = []
     for p in data.get("data", {}).get("pgInfos", []):
         pgid = p.get("pgId")
         if pgid is None:
             continue
         rows.append((int(pgid), (p.get("name") or "").strip(),
-                     float(p.get("price") or 0) / 100.0, URL))
+                     float(p.get("price") or 0) / 100.0))
     return rows
 
 
@@ -67,7 +66,7 @@ async def main() -> None:
             if args.replace:
                 await conn.execute("DELETE FROM gift_catalog WHERE id_type = 'pgid'")
             async with conn.cursor() as cur:
-                await cur.executemany(INSERT_SQL, [(g, n, p, p, s) for g, n, p, s in rows])
+                await cur.executemany(INSERT_SQL, [(g, n, p, p) for g, n, p in rows])
         print(f"imported {len(rows)} pgid gifts into gift_catalog")
     finally:
         await db.close()
