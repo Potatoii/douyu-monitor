@@ -68,9 +68,11 @@ def collect_actqx() -> list[tuple[str, int, str, float]]:
                     seen.add(gid)
                     if gid >= 20000:
                         continue  # 办卡/飞机/火箭等标准礼物已存在
-                    rows.append(("pid", int(gid), prop.get("giftName", ""), 0.0))
+                    rows.append(("pid", int(gid), prop.get("giftName", ""),
+                                 float(prop.get("price") or 0)))
     if vr.get("freePropId") and int(vr["freePropId"]) not in seen:
-        rows.append(("pid", int(vr["freePropId"]), vr.get("freePropName", ""), 0.0))
+        rows.append(("pid", int(vr["freePropId"]), vr.get("freePropName", ""),
+                     float(vr.get("freePropPrice") or 0)))
     return rows
 
 

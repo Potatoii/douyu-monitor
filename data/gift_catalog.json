@@ -25994,33 +25994,33 @@
   },
   "4073": {
    "name": "小海星",
-   "price_yu": 0.0,
-   "value_rmb": 0.0
+   "price_yu": 1.0,
+   "value_rmb": 1.0
   },
   "4072": {
    "name": "贝片",
-   "price_yu": 0.0,
-   "value_rmb": 0.0
+   "price_yu": 0.1,
+   "value_rmb": 0.1
   },
   "4074": {
    "name": "寄居蟹",
-   "price_yu": 0.0,
-   "value_rmb": 0.0
+   "price_yu": 6.0,
+   "value_rmb": 6.0
   },
   "4075": {
    "name": "潮汐海螺",
-   "price_yu": 0.0,
-   "value_rmb": 0.0
+   "price_yu": 50.0,
+   "value_rmb": 50.0
   },
   "4076": {
    "name": "珊瑚絮语",
-   "price_yu": 0.0,
-   "value_rmb": 0.0
+   "price_yu": 100.0,
+   "value_rmb": 100.0
   },
   "4077": {
    "name": "月色珍珠",
-   "price_yu": 0.0,
-   "value_rmb": 0.0
+   "price_yu": 500.0,
+   "value_rmb": 500.0
   },
   "4080": {
    "name": "心动贝壳",
