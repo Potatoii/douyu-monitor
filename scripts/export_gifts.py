@@ -2,7 +2,7 @@
 
 用法: python -m scripts.export_gifts [--output gift_catalog.json]
 格式: {"gfid": {"192": {"name": "赞", "price_yu": 0, "value_rmb": 0}, ...}, "pid": {...}, "pgid": {...}}
-price 单位为"元", 与数据库 price_yu/value_rmb 一致.
+price 单位为"元", 与数据库 price_yu/value_rmb 一致. 每组内按 gift_id 数字升序排列.
 """
 
 import argparse
@@ -27,7 +27,8 @@ async def main() -> None:
     try:
         async with db.pool().connection() as conn:
             rows = await (await conn.execute(
-                "SELECT id_type, gift_id, gift_name, price_yu, value_rmb FROM gift_catalog"
+                "SELECT id_type, gift_id, gift_name, price_yu, value_rmb "
+                "FROM gift_catalog ORDER BY id_type, gift_id"
             )).fetchall()
     finally:
         await db.close()
