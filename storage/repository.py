@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 from psycopg.rows import dict_row
 from psycopg_pool import AsyncConnectionPool
 
@@ -91,7 +93,7 @@ async def load_gift_catalog(pool: AsyncConnectionPool) -> dict[int, tuple[str | 
     return catalog
 
 
-async def query_gift_value(pool: AsyncConnectionPool, gift_id: int) -> tuple[str | None, int | None, int | None] | None:
+async def query_gift_value(pool: AsyncConnectionPool, gift_id: int) -> tuple[str | None, Decimal | None, Decimal | None] | None:
     async with pool.connection() as conn:
         async with conn.cursor(row_factory=dict_row) as cur:
             await cur.execute(
@@ -102,16 +104,14 @@ async def query_gift_value(pool: AsyncConnectionPool, gift_id: int) -> tuple[str
             row = await cur.fetchone()
     if row is None:
         return None
-    price_yu = row["price_yu"]
-    value_rmb = row["value_rmb"]
     return (
         row["gift_name"],
-        int(price_yu) if price_yu is not None else None,
-        float(value_rmb) if value_rmb is not None else None,
+        row["price_yu"],
+        row["value_rmb"],
     )
 
 
-async def query_gift_by_name(pool: AsyncConnectionPool, gift_name: str) -> tuple[int, str | None, int | None, int | None] | None:
+async def query_gift_by_name(pool: AsyncConnectionPool, gift_name: str) -> tuple[int, str | None, Decimal | None, Decimal | None] | None:
     async with pool.connection() as conn:
         async with conn.cursor(row_factory=dict_row) as cur:
             await cur.execute(
@@ -123,11 +123,9 @@ async def query_gift_by_name(pool: AsyncConnectionPool, gift_name: str) -> tuple
             row = await cur.fetchone()
     if row is None:
         return None
-    price_yu = row["price_yu"]
-    value_rmb = row["value_rmb"]
     return (
         row["gift_id"],
         row["gift_name"],
-        int(price_yu) if price_yu is not None else None,
-        float(value_rmb) if value_rmb is not None else None,
+        row["price_yu"],
+        row["value_rmb"],
     )

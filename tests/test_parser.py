@@ -1,4 +1,5 @@
 from datetime import datetime, timezone
+from decimal import Decimal
 
 from core import parser, protocol
 
@@ -178,7 +179,8 @@ def test_parse_subscription_dfobc():
     assert event.sender_uid == 2319772
     assert event.sender_nickname == "巴蒂batigoal"
     assert event.receive_uid is None
-    assert event.gift_value is None
+    assert event.gift_value == Decimal("158.00")
+    assert event.total_value == Decimal("474.00")
     row = event.to_db_row()
     assert row[13].tzinfo is None
     assert row[13] == datetime(2026, 8, 13, 1, 26, 14)

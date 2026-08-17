@@ -22,8 +22,8 @@ class PriceService:
 
     def __init__(self, pool: AsyncConnectionPool):
         self._pool = pool
-        self._catalog: dict[int, tuple[str | None, int | None, Decimal | None]] = {}
-        self._name_index: dict[str, tuple[str | None, int | None, Decimal | None]] = {}
+        self._catalog: dict[int, tuple[str | None, Decimal | None, Decimal | None]] = {}
+        self._name_index: dict[str, tuple[str | None, Decimal | None, Decimal | None]] = {}
         self._missing: dict[int, float] = {}
         self._name_miss: dict[str, float] = {}
 
@@ -49,22 +49,22 @@ class PriceService:
         if name:
             event.gift_name = name
         if price_yu is not None:
-            event.gift_price = price_yu
-            event.total_price = price_yu * event.gift_count
+            event.gift_price = int(price_yu)
+            event.total_price = int(price_yu * event.gift_count)
         if value_rmb is not None:
             event.gift_value = value_rmb
             event.total_value = value_rmb * event.gift_count
 
-    async def _load(self, gift_id: int) -> tuple[str | None, int | None, Decimal | None] | None:
+    async def _load(self, gift_id: int) -> tuple[str | None, Decimal | None, Decimal | None] | None:
         row = await repository.query_gift_value(self._pool, gift_id)
         if row is None:
             return None
         name, price_yu, value = row
-        info = name, price_yu, Decimal(str(value)) if value is not None else None
+        info = name, price_yu, value
         self._catalog[gift_id] = info
         return info
 
-    async def _load_by_name(self, gift_name: str) -> tuple[str | None, int | None, Decimal | None] | None:
+    async def _load_by_name(self, gift_name: str) -> tuple[str | None, Decimal | None, Decimal | None] | None:
         if not gift_name:
             return None
         cached = self._name_index.get(gift_name)
@@ -78,6 +78,6 @@ class PriceService:
             self._name_miss[gift_name] = time.monotonic()
             return None
         _, name, price_yu, value = row
-        info = name, price_yu, Decimal(str(value)) if value is not None else None
+        info = name, price_yu, value
         self._name_index[gift_name] = info
         return info

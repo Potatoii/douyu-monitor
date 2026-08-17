@@ -133,6 +133,8 @@ def parse_subscription(
     price = _to_int(fields.get("price"))
     total_price = price // 100 if price is not None else None
     gift_price = total_price // mn if total_price is not None else None
+    gift_value = Decimal(gift_price) if gift_price is not None else None
+    total_value = Decimal(total_price) if total_price is not None else None
     sent_at = None
     if fields.get("bet"):
         try:
@@ -149,8 +151,8 @@ def parse_subscription(
         gift_count=mn,
         gift_price=gift_price,
         total_price=total_price,
-        gift_value=None,
-        total_value=None,
+        gift_value=gift_value,
+        total_value=total_value,
         receive_uid=None,
         hit_score=None,
         sent_at=sent_at,
