@@ -49,8 +49,11 @@ def collect_actqx() -> list[tuple[str, int, str, float]]:
 
     gs = data.get("gift_setting") or {}
     if gs.get("giftId"):
-        rows.append(("gfid", int(gs["giftId"]), gs.get("giftName", ""),
-                     float(gs.get("giftPrice") or 0)))
+        gid = int(gs["giftId"])
+        price = float(gs.get("giftPrice") or 0)
+        if gid == 24895:
+            price = 0.0  # 踏浪礼包为任务赠送免费礼包, 配置 giftPrice 非售价
+        rows.append(("gfid", gid, gs.get("giftName", ""), price))
 
     fame = (data.get("fameAttributes") or {}).get("halfHourFame") or {}
     if fame.get("giftId"):
