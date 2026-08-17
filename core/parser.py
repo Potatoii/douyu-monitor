@@ -82,8 +82,8 @@ def parse_gift(
     if fields.get("type") != "dgb":
         return None
     gift_id = _to_int(fields.get("gfid"))
-    if gift_id is None:
-        gift_id = _to_int(fields.get("gid"))
+    if not gift_id:
+        gift_id = _to_int(fields.get("pid"))  # gfid=0 的活动礼物, pid@ 是真实 ID
     if gift_id is None:
         return None
     nickname = fields.get("nn") or ""

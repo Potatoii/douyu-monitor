@@ -98,8 +98,10 @@ async def query_gift_value(pool: AsyncConnectionPool, gift_id: int) -> tuple[str
         async with conn.cursor(row_factory=dict_row) as cur:
             await cur.execute(
                 "SELECT gift_name, price_yu, value_rmb FROM gift_catalog "
-                "WHERE id_type = 'gfid' AND gift_id = %s",
-                (gift_id,),
+                "WHERE (id_type = 'gfid' AND gift_id = %s) "
+                "   OR (id_type = 'pid'  AND gift_id = %s) "
+                "ORDER BY (id_type = 'gfid') DESC LIMIT 1",
+                (gift_id, gift_id),
             )
             row = await cur.fetchone()
     if row is None:

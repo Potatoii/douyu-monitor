@@ -35,8 +35,8 @@ def test_parse_real_dgb_sample():
     assert event.gift_name == ""
 
 
-def test_parse_gift_gid_fallback():
-    body = "type@=dgb/rid@=288016/gid@=324/gfcnt@=2"
+def test_parse_gift_pid_fallback():
+    body = "type@=dgb/rid@=288016/gfid@=0/pid@=324/gfcnt@=2"
     event = parser.parse_gift(protocol.parse_body(body), 288016, 0, NOW, body)
     assert event is not None
     assert event.gift_id == 324
@@ -51,7 +51,7 @@ def test_parse_targeted_gift():
 
 
 def test_parse_gift_defaults():
-    body = "type@=dgb/rid@=288016/gid@=324"
+    body = "type@=dgb/rid@=288016/pid@=324"
     event = parser.parse_gift(protocol.parse_body(body), 288016, 0, NOW, body)
     assert event is not None
     assert event.gift_count == 1
@@ -85,6 +85,33 @@ def test_to_db_row_naive_cst():
     assert row[13].tzinfo is None
     assert row[13] == datetime(2026, 7, 31, 20, 0, 0)
     assert row[14] == datetime(2026, 7, 31, 20, 0, 0)
+
+
+ACTIVITY_DGB = ("type@=dgb/rid@=12598324/gfid@=0/gs@=0/uid@=339634851/nn@=x/eid@=0/eic@=0/"
+                "level@=41/gfcnt@=10/hits@=1/bcnt@=1/bst@=2/ct@=0/bnn@=y/bl@=28/brid@=63136/"
+                "hc@=x/diaf@=1/dfgm@=22/sahf@=0/fc@=0/gpf@=1/pid@=4072/bnid@=1/bnl@=1/"
+                "receive_uid@=766285112/receive_nn@=z/from@=2/pfm@=20520/pma@=342497027/"
+                "mss@=342497025/bcst@=1/bsfl@=1/ce@=1/gfn@=贝片/fl@=12/")
+NORMAL_DGB = ("type@=dgb/rid@=12598324/gfid@=520/gs@=0/uid@=52569025/nn@=w/eid@=0/eic@=20052/"
+              "level@=47/gfcnt@=1/hits@=1/bcnt@=1/bst@=2/ct@=0/bnn@=v/bl@=27/brid@=6979222/"
+              "hc@=x/sahf@=0/fc@=0/gpf@=1/pid@=23/bnid@=1/bnl@=1/receive_uid@=766285112/"
+              "receive_nn@=u/from@=2/pfm@=19286/pma@=61138933/mss@=61138820/bcst@=1/ce@=1/"
+              "gfn@=稳/fl@=11/")
+
+
+def test_parse_activity_gift_uses_pid_when_gfid_zero():
+    event = parser.parse_gift(protocol.parse_body(ACTIVITY_DGB), 12598324, 4, NOW, ACTIVITY_DGB)
+    assert event is not None
+    assert event.gift_id == 4072
+    assert event.gift_name == "贝片"
+    assert event.gift_count == 10
+
+
+def test_parse_normal_gift_keeps_gfid_ignores_pid():
+    event = parser.parse_gift(protocol.parse_body(NORMAL_DGB), 12598324, 4, NOW, NORMAL_DGB)
+    assert event is not None
+    assert event.gift_id == 520
+    assert event.gift_name == "稳"
 
 
 CHATMSG = ("type@=chatmsg/rid@=12598324/ct@=1/uid@=2566587/nn@=Archy木昜/"
