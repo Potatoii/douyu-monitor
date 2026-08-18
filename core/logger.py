@@ -17,6 +17,9 @@ _FILES = {
     STREAM_ERROR: "error",
 }
 
+# raw 是原始消息兜底备份(仅 replay_subscriptions 消费), 保留 2 天即可
+_RAW_RETENTION_DAYS = 2
+
 
 def setup_logging(log_dir: str = "logs", retention_days: int = 7) -> None:
     """初始化日志: raw/gift/system/error 四个按天轮转的 JSONL 文件 + 控制台输出.
@@ -34,7 +37,7 @@ def setup_logging(log_dir: str = "logs", retention_days: int = 7) -> None:
             filter=lambda record, s=stream: record["extra"].get("stream") == s,
             serialize=True,
             rotation="00:00",
-            retention=retention_days,
+            retention=min(_RAW_RETENTION_DAYS, retention_days) if stream == STREAM_RAW else retention_days,
             encoding="utf-8",
             enqueue=True,
         )

@@ -62,7 +62,8 @@ class GiftMonitor:
     async def on_message(self, room_id: int, port: int, body: str) -> None:
         fields = parse_body(body)
         msg_type = fields.get("type", "")
-        logger.log_raw(room_id, port, msg_type, body)
+        if msg_type in ("dgb", "dfobc", "dfrbc"):
+            logger.log_raw(room_id, port, msg_type, body)
         if self.settings.danmu_enabled and (
             msg_type == "chatmsg" or (msg_type == "comm_chatmsg" and fields.get("btype"))
         ):
