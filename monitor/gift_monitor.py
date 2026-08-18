@@ -1,4 +1,5 @@
 import asyncio
+import hashlib
 import time
 from datetime import datetime, timezone
 
@@ -19,6 +20,7 @@ class GiftMonitor:
         if not self.room_ids:
             raise ValueError("no rooms configured, set ROOMS in .env or pass --room")
         self.deduper = Deduper(max_size=settings.dedup_max_size)
+        self.raw_deduper = Deduper(max_size=settings.dedup_max_size)
         self.queue: asyncio.Queue[parser.GiftEvent] = asyncio.Queue(maxsize=50_000)
         self.danmu_deduper = Deduper(max_size=settings.dedup_max_size)
         self.danmu_queue: asyncio.Queue[parser.DanmuMessage] = asyncio.Queue(maxsize=50_000)
@@ -62,7 +64,9 @@ class GiftMonitor:
     async def on_message(self, room_id: int, port: int, body: str) -> None:
         fields = parse_body(body)
         msg_type = fields.get("type", "")
-        if msg_type in ("dgb", "dfobc", "dfrbc"):
+        if msg_type not in ("uenter",) and self.raw_deduper.is_new(
+            hashlib.md5(body.encode("utf-8", errors="replace")).hexdigest()
+        ):
             logger.log_raw(room_id, port, msg_type, body)
         if self.settings.danmu_enabled and (
             msg_type == "chatmsg" or (msg_type == "comm_chatmsg" and fields.get("btype"))
